@@ -10,8 +10,7 @@ import {
 } from "flowbite-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { handleDatapointSubmit } from "../../../utils/dataPoints/addDataPointUtils";
-
+import { handleDatapointSubmit } from "../../utils/dataPoints/addDataPointUtils";
 
 const DataPointForm = () => {
 	const [isMultiColumn, setIsMultiColumn] = useState(false);
