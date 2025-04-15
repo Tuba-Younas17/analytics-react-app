@@ -3,12 +3,13 @@ import DataPointForm from "./DataPointForm";
 
 
 const DataPointManagementPage = () => {
-    return (
+	return (
 		<>
 			<div className="flex min-h-screen bg-gray-50">
 				{/* Main Content */}
 				<div className="flex-1 p-6">
-					<DataPointForm/>
+					<DataPointForm />
+					
 				</div>
 			</div>
 		</>

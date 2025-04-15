@@ -23,7 +23,7 @@ const AppSidebar = () => {
 		>
 			<SidebarItems className="py-6">
 				<SidebarItemGroup className="space-y-6">
-					<SidebarItem href="#" icon={HiCollection}>
+					<SidebarItem href="/" icon={HiCollection}>
 						Data Points
 					</SidebarItem>
 					<SidebarItem href="#" icon={HiChartPie}>

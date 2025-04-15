@@ -1,4 +1,3 @@
-// src/components/DataPointForm.jsx
 import React, { useState } from "react";
 import {
 	Label,
@@ -10,9 +9,12 @@ import {
 } from "flowbite-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { handleDatapointSubmit } from "../../utils/dataPoints/addDataPointUtils";
+import { handleDatapointSubmit } from "../../../utils/dataPoints/addDataPointUtils";
+import { useNavigate } from "react-router-dom";
+import { FaCheck, FaEye, FaUndo } from "react-icons/fa"; // Importing Font Awesome icons
 
 const DataPointForm = () => {
+	const navigate = useNavigate();
 	const [isMultiColumn, setIsMultiColumn] = useState(false);
 
 	const formik = useFormik({
@@ -143,7 +145,14 @@ const DataPointForm = () => {
 
 				<div className="flex gap-4 mt-6">
 					<Button color="gray" type="submit">
-						Submit
+						<FaCheck className="mr-2" /> Submit
+					</Button>
+					<Button
+						color="gray"
+						type="button"
+						onClick={() => navigate("/view-all-data-points")} // <-- Navigation on click
+					>
+						<FaEye className="mr-2" /> View All DataPoints
 					</Button>
 					<Button
 						color="light"
@@ -153,7 +162,7 @@ const DataPointForm = () => {
 							setIsMultiColumn(false);
 						}}
 					>
-						Reset
+						<FaUndo className="mr-2" /> Reset
 					</Button>
 				</div>
 			</form>
