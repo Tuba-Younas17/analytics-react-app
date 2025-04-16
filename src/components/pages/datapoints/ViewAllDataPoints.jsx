@@ -69,7 +69,14 @@ const ViewAllDataPoints = () => {
 							<b>Description:</b> {dp.description}
 						</p>
 						<p className="text-gray-600 mb-2">
-							<b>Columns:</b> {dp.columns}
+							<b>Frequency:</b> {dp.frequency}
+						</p>
+						<p className="text-gray-600 mb-2">
+							<b>User Roles:</b> {dp.userRoles.join(", ")}
+						</p>
+						<p className="text-gray-600 mb-2">
+							<b>Date:</b>{" "}
+							{new Date(dp.date).toLocaleDateString()}
 						</p>
 						<div className="flex gap-4 mt-4">
 							<Button

@@ -1,9 +1,9 @@
 
 import { toast } from "react-toastify";
 import { updateDataPointById } from "../../service/dataPointService/updateDataPointById";
-
 export const handleSubmitForUpdateForm = async (id, values, navigate) => {
 	try {
+		console.log("Submitted values:", values); // 👈 Add this line
 		await updateDataPointById(id, values);
 		toast.success("Data point updated successfully!");
 		setTimeout(() => {

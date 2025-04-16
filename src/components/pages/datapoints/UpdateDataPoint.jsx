@@ -4,38 +4,41 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faBan } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Select from "react-select";
+
 
 import {
 	Button,
 	Label,
 	TextInput,
 	Textarea,
-	Select,
-	ToggleSwitch,
+	// Select,
+	Datepicker,
 } from "flowbite-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import SkeletonLoader from "../../layout/SkeletonLoader";
 import { fetchDataForSpecificId } from "../../../utils/dataPoints/fetchDataForSpecificId";
 import { handleSubmitForUpdateForm } from "../../../utils/dataPoints/handleSubmitForUpdateForm";
+import { frequencyOptions, userRoleOptions } from "../../../constants/roleAndFrequencyConstants";
 
 const UpdateDataPoint = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const [isMultiColumn, setIsMultiColumn] = useState(false);
 	const [initialValues, setInitialValues] = useState(null);
 
 	const validationSchema = Yup.object({
 		name: Yup.string().required("Name is required"),
 		type: Yup.string().required("Type is required"),
 		description: Yup.string().required("Description is required"),
-		columns: Yup.string().required("Columns is required"),
+		frequency: Yup.string().required("Frequency is required"),
+		userRoles: Yup.array().min(1, "Select at least one role"),
+		date: Yup.date().required("Date is required"),
 	});
 
-useEffect(() => {
-	// Fetch the data when the component mounts and pass the necessary setters
-	fetchDataForSpecificId(id, setInitialValues, setIsMultiColumn);
-}, [id]);
+	useEffect(() => {
+		fetchDataForSpecificId(id, setInitialValues);
+	}, [id]);
 
 	if (!initialValues) return <SkeletonLoader />;
 
@@ -123,43 +126,75 @@ useEffect(() => {
 							)}
 						</div>
 
-						{/* Multi-Column Toggle */}
-						<div className="flex items-center gap-4 mt-2">
-							<ToggleSwitch
-								checked={isMultiColumn}
-								label="Enable Multi-Columns"
-								onChange={(checked) => {
-									setIsMultiColumn(checked);
-									if (!checked) {
-										setFieldValue("columns", "1");
-									}
-								}}
+						{/* Frequency */}
+						<div>
+							<Label htmlFor="frequency" value="Frequency" />
+							<Select
+								id="frequency"
+								name="frequency"
+								options={frequencyOptions}
+								value={frequencyOptions.find(
+									(option) =>
+										option.value === values.frequency
+								)}
+								onChange={(selectedOption) =>
+									setFieldValue(
+										"frequency",
+										selectedOption.value
+									)
+								}
+								onBlur={handleBlur}
 							/>
+							{touched.frequency && errors.frequency && (
+								<p className="text-red-500 text-sm mt-1">
+									{errors.frequency}
+								</p>
+							)}
+						</div>
 
-							{isMultiColumn && (
-								<div className="w-40">
-									<Label
-										htmlFor="columns"
-										value="No. of Columns"
-									/>
-									<Select
-										id="columns"
-										name="columns"
-										value={values.columns}
-										onChange={handleChange}
-										onBlur={handleBlur}
-									>
-										<option value="1">1 Column</option>
-										<option value="2">2 Columns</option>
-										<option value="3">3 Columns</option>
-										<option value="4">4 Columns</option>
-									</Select>
-									{touched.columns && errors.columns && (
-										<p className="text-red-500 text-sm mt-1">
-											{errors.columns}
-										</p>
-									)}
-								</div>
+						{/* User Roles */}
+						<div>
+							<Label htmlFor="userRoles" value="User Roles" />
+							<Select
+								id="userRoles"
+								name="userRoles"
+								isMulti
+								options={userRoleOptions}
+								value={userRoleOptions.filter((opt) =>
+									values.userRoles.includes(opt.value)
+								)}
+								onChange={(selectedOptions) => {
+									const roles = selectedOptions.map(
+										(option) => option.value
+									);
+									setFieldValue("userRoles", roles);
+								}}
+								onBlur={handleBlur}
+							/>
+							{touched.userRoles && errors.userRoles && (
+								<p className="text-red-500 text-sm mt-1">
+									{errors.userRoles}
+								</p>
+							)}
+						</div>
+
+						{/* Date */}
+						<div>
+							<Label htmlFor="date" value="Date" />
+							<TextInput
+								id="date"
+								name="date"
+								type="date"
+								value={
+									values.date ? values.date.split("T")[0] : ""
+								}
+								onChange={handleChange}
+								onBlur={handleBlur}
+							/>
+							{touched.date && errors.date && (
+								<p className="text-red-500 text-sm mt-1">
+									{errors.date}
+								</p>
 							)}
 						</div>
 

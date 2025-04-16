@@ -6,6 +6,9 @@ import {
 	Select,
 	Button,
 	ToggleSwitch,
+	Checkbox,
+	Datepicker,
+	Radio,
 } from "flowbite-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -22,7 +25,10 @@ const DataPointForm = () => {
 			name: "",
 			type: "Text Field",
 			description: "",
-			columns: "1",
+			columns: "1", // For number of columns (e.g., 1 or 2)
+			frequency: "", // For Radio buttons (e.g., hourly, daily)
+			userRoles: [], // For checkboxes (e.g., Data Collector, Administrator)
+			date: "", // For date input
 		},
 		validationSchema: Yup.object({
 			name: Yup.string().required("Name is required"),
@@ -31,7 +37,12 @@ const DataPointForm = () => {
 				.required("Description is required")
 				.min(10, "Must be at least 10 characters")
 				.max(200, "Must be less than 200 characters"),
-			columns: Yup.string().required("Columns required"),
+			columns: Yup.string()
+				.required("Columns required")
+				.matches(/^[1-9]$/, "Columns must be a number between 1 and 9"), // Added validation for columns
+			frequency: Yup.string().required("Frequency is required"),
+			userRoles: Yup.array().min(1, "At least one role is required"),
+			date: Yup.date().required("Date is required").nullable(), // Handle nullable date
 		}),
 		onSubmit: async (values, { resetForm }) => {
 			await handleDatapointSubmit(values, isMultiColumn, resetForm);
@@ -74,7 +85,7 @@ const DataPointForm = () => {
 							<option>Text Field</option>
 							<option>Number</option>
 							<option>Date</option>
-							<option>Dropdown</option>
+							{/* <option>Dropdown</option> */}
 						</Select>
 						{formik.touched.type && formik.errors.type && (
 							<p className="text-red-500 text-sm mt-1">
@@ -102,43 +113,239 @@ const DataPointForm = () => {
 							)}
 					</div>
 
-					<div className="flex items-center gap-4 mt-2">
-						<ToggleSwitch
-							checked={isMultiColumn}
-							label="Enable Multi-Columns"
-							onChange={(checked) => {
-								setIsMultiColumn(checked);
-								if (!checked) {
-									formik.setFieldValue("columns", "1");
-								}
-							}}
-						/>
+					{/* Frequency (Radio Buttons) */}
+					<div className="md:col-span-2">
+						<p className="text-sm text-gray-600 mb-4">
+							<h1 className="text-xl text-gray-900 font-semibold mb-2">
+								Frequency
+							</h1>
+							Select the frequency for data tracking.
+						</p>
 
-						{isMultiColumn && (
-							<div className="w-40">
-								<Label
-									htmlFor="columns"
-									value="No. of Columns"
-								/>
-								<Select
-									id="columns"
-									name="columns"
+						<div className="flex gap-6 flex-wrap">
+							<div className="flex items-center">
+								<Radio
+									id="hourly"
+									name="frequency"
+									label="Hourly"
 									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									value={formik.values.columns}
+									value="Hourly"
+									checked={
+										formik.values.frequency === "Hourly"
+									}
+								/>
+								<Label
+									htmlFor="hourly"
+									className="ml-2 text-sm"
 								>
-									<option value="1">1 Column</option>
-									<option value="2">2 Columns</option>
-									<option value="3">3 Columns</option>
-									<option value="4">4 Columns</option>
-								</Select>
-								{formik.touched.columns &&
-									formik.errors.columns && (
-										<p className="text-red-500 text-sm mt-1">
-											{formik.errors.columns}
-										</p>
-									)}
+									Hourly
+								</Label>
 							</div>
+							<div className="flex items-center">
+								<Radio
+									id="daily"
+									name="frequency"
+									label="Daily"
+									onChange={formik.handleChange}
+									value="Daily"
+									checked={
+										formik.values.frequency === "Daily"
+									}
+								/>
+								<Label htmlFor="daily" className="ml-2 text-sm">
+									Daily
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Radio
+									id="weekly"
+									name="frequency"
+									label="Weekly"
+									onChange={formik.handleChange}
+									value="Weekly"
+									checked={
+										formik.values.frequency === "Weekly"
+									}
+								/>
+								<Label
+									htmlFor="weekly"
+									className="ml-2 text-sm"
+								>
+									Weekly
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Radio
+									id="monthly"
+									name="frequency"
+									label="Monthly"
+									onChange={formik.handleChange}
+									value="Monthly"
+									checked={
+										formik.values.frequency === "Monthly"
+									}
+								/>
+								<Label
+									htmlFor="monthly"
+									className="ml-2 text-sm"
+								>
+									Monthly
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Radio
+									id="quarterly"
+									name="frequency"
+									label="Quarterly"
+									onChange={formik.handleChange}
+									value="Quarterly"
+									checked={
+										formik.values.frequency === "Quarterly"
+									}
+								/>
+								<Label
+									htmlFor="quarterly"
+									className="ml-2 text-sm"
+								>
+									Quarterly
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Radio
+									id="biannually"
+									name="frequency"
+									label="Biannually"
+									onChange={formik.handleChange}
+									value="Biannually"
+									checked={
+										formik.values.frequency === "Biannually"
+									}
+								/>
+								<Label
+									htmlFor="biannually"
+									className="ml-2 text-sm"
+								>
+									Biannually
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Radio
+									id="yearly"
+									name="frequency"
+									label="Yearly"
+									onChange={formik.handleChange}
+									value="Yearly"
+									checked={
+										formik.values.frequency === "Yearly"
+									}
+								/>
+								<Label
+									htmlFor="yearly"
+									className="ml-2 text-sm"
+								>
+									Yearly
+								</Label>
+							</div>
+						</div>
+						{formik.touched.frequency &&
+							formik.errors.frequency && (
+								<p className="text-red-500 text-sm mt-1">
+									{formik.errors.frequency}
+								</p>
+							)}
+					</div>
+
+					{/* User Roles (Checkboxes) */}
+					<div className="md:col-span-2">
+						<p className="text-sm text-gray-600 mb-4">
+							<h1 className="text-xl text-gray-900 font-semibold mb-2">
+								User Roles
+							</h1>
+							Select the user roles for the individual.
+						</p>
+
+						<div className="flex gap-6 flex-wrap">
+							<div className="flex items-center">
+								<Checkbox
+									id="dataCollector"
+									name="userRoles"
+									value="Data Collector"
+									onChange={formik.handleChange}
+									checked={formik.values.userRoles.includes(
+										"Data Collector"
+									)}
+								/>
+								<Label
+									htmlFor="dataCollector"
+									className="ml-2 text-sm"
+								>
+									Data Collector
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Checkbox
+									id="dashboardViewer"
+									name="userRoles"
+									value="Dashboard Viewer"
+									onChange={formik.handleChange}
+									checked={formik.values.userRoles.includes(
+										"Dashboard Viewer"
+									)}
+								/>
+								<Label
+									htmlFor="dashboardViewer"
+									className="ml-2 text-sm"
+								>
+									Dashboard Viewer
+								</Label>
+							</div>
+							<div className="flex items-center">
+								<Checkbox
+									id="administrator"
+									name="userRoles"
+									value="Administrator"
+									onChange={formik.handleChange}
+									checked={formik.values.userRoles.includes(
+										"Administrator"
+									)}
+								/>
+								<Label
+									htmlFor="administrator"
+									className="ml-2 text-sm"
+								>
+									Administrator
+								</Label>
+							</div>
+						</div>
+						{formik.touched.userRoles &&
+							formik.errors.userRoles && (
+								<p className="text-red-500 text-sm mt-1">
+									{formik.errors.userRoles}
+								</p>
+							)}
+					</div>
+
+					{/* Date (Date Input) */}
+					<div className="md:col-span-2">
+						<p className="text-sm text-gray-600 mb-4">
+							<h1 className="text-xl text-gray-900 mb-2">Date</h1>
+							Please select a date that is relevant to the data
+							point. This field is used to track specific data
+							based on time.
+						</p>
+
+						<Datepicker
+							id="date"
+							name="date"
+							selected={formik.values.date}
+							onChange={(date) =>
+								formik.setFieldValue("date", date)
+							}
+						/>
+						{formik.touched.date && formik.errors.date && (
+							<p className="text-red-500 text-sm mt-1">
+								{formik.errors.date}
+							</p>
 						)}
 					</div>
 				</div>
