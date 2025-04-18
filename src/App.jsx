@@ -7,6 +7,7 @@ import DataPointManagementPage from "./components/pages/datapoints/DataPointMana
 import AppSidebar from "./components/layout/Sidebar";
 import ViewAllDataPoints from "./components/pages/datapoints/ViewAllDataPoints";
 import UpdateDataPoint from "./components/pages/datapoints/UpdateDataPoint";
+import AssignTemplateForm from "./components/pages/template/AssignTemplateForm";
 
 const App = () => {
 	return (
@@ -18,6 +19,7 @@ const App = () => {
 						<Route exact path="/" element={<DataPointManagementPage />} />
 						<Route exact path="/view-all-data-points" element={<ViewAllDataPoints />} />
 						<Route exact path="/update/:id" element={<UpdateDataPoint />} />
+						<Route exact path="/assign-template-form" element={<AssignTemplateForm />} />
 						{/* Add more routes here */}
 					</Routes>
 				</div>

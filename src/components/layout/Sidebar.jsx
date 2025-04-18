@@ -1,4 +1,3 @@
-// src/components/layout/Sidebar.jsx
 import React from "react";
 import {
 	Sidebar,
@@ -13,6 +12,8 @@ import {
 	HiUsers,
 	HiUserCircle,
 	HiUserGroup,
+	HiDatabase, // New icon for Data Points
+	HiFolderAdd, // New icon for Collections
 } from "react-icons/hi";
 
 const AppSidebar = () => {
@@ -23,9 +24,19 @@ const AppSidebar = () => {
 		>
 			<SidebarItems className="py-6">
 				<SidebarItemGroup className="space-y-6">
-					<SidebarItem href="/" icon={HiCollection}>
+					{/* Updated icon for Data Points */}
+					<SidebarItem href="/" icon={HiDatabase}>
 						Data Points
 					</SidebarItem>
+
+					{/* Updated icon for Collections */}
+					<SidebarItem
+						href="/assign-template-form"
+						icon={HiFolderAdd}
+					>
+						Collections
+					</SidebarItem>
+
 					<SidebarItem href="#" icon={HiChartPie}>
 						Charts
 					</SidebarItem>
