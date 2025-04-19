@@ -8,6 +8,7 @@ import AppSidebar from "./components/layout/Sidebar";
 import ViewAllDataPoints from "./components/pages/datapoints/ViewAllDataPoints";
 import UpdateDataPoint from "./components/pages/datapoints/UpdateDataPoint";
 import AssignTemplateForm from "./components/pages/template/AssignTemplateForm";
+import AddTemplateForm from "./components/pages/template/AddTemplateForm";
 
 const App = () => {
 	return (
@@ -20,22 +21,23 @@ const App = () => {
 						<Route exact path="/view-all-data-points" element={<ViewAllDataPoints />} />
 						<Route exact path="/update/:id" element={<UpdateDataPoint />} />
 						<Route exact path="/assign-template-form" element={<AssignTemplateForm />} />
-						{/* Add more routes here */}
+						<Route exact path="/add-template-form" element={<AddTemplateForm />} />
+						
 					</Routes>
 				</div>
 			</div>
 
 			{/* Add ToastContainer for global toast notifications */}
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop
-				closeOnClick
-				pauseOnHover
-				draggable
-				progress
-			/>
+		<ToastContainer
+	position="top-right"
+	autoClose={3000}
+	hideProgressBar={false}
+	newestOnTop
+	closeOnClick
+	pauseOnHover={false}
+	draggable
+/>
+
 		</>
 	);
 };

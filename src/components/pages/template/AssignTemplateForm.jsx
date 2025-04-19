@@ -1,188 +1,169 @@
-import React from "react";
-import { FaQuestionCircle } from "react-icons/fa";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { useState, useEffect } from "react";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Select from "react-select";
+import { FiSend, FiPlus } from "react-icons/fi"; // Added FiPlus for Add button
+import { useNavigate } from "react-router-dom";
+import SkeletonLoader from "../../layout/SkeletonLoader";
 
-const AssignDataCollectionTemplate = () => {
-	// Formik validation schema
-	const validationSchema = Yup.object({
-		title: Yup.string().required("Title is required"),
-		roles: Yup.array()
-			.min(1, "At least one role must be selected")
-			.required("Roles are required"),
-		cycle: Yup.string().required("Collection cycle is required"),
+import { fetchData } from "../../../utils/template/fetchDataForAssignTemplateUtils";
+import { handleSubmitAssignTemplate } from "../../../service/tempateService/handleSubmitAssignTemplate";
+
+
+const AssignTemplateForm = () => {
+	const [templates, setTemplates] = useState([]);
+	const [userGroups, setUserGroups] = useState([]);
+	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate(); // hook for navigation
+
+  useEffect(() => {
+		fetchData(setTemplates, setUserGroups);
+  }, []);
+
+	const formik = useFormik({
+		initialValues: {
+			templates: [],
+			userGroup: "",
+			cycle: "",
+		},
+		validationSchema: Yup.object({
+			templates: Yup.array().min(1, "Select at least one template"),
+			userGroup: Yup.string().required("User group is required"),
+			cycle: Yup.string().required("Cycle is required"),
+		}),
+		onSubmit: (values) => {
+			handleSubmitAssignTemplate(
+				values,
+				setLoading,
+				formik
+			);
+		},
 	});
 
-	const handleSubmit = async (values, { setSubmitting }) => {
-		try {
-			await axios.post(
-				"http://localhost:3000/api/v1/template/assign-template",
-				values
-			);
-			toast.success("Template assigned successfully!");
-		} catch (error) {
-			toast.error("Assignment failed: " + error.message);
-		}
-		setSubmitting(false);
-	};
+	const templateOptions = templates.map((t) => ({
+		label: t.title,
+		value: t._id,
+	}));
+
+	if (loading) return <SkeletonLoader />;
 
 	return (
-		<div className="flex items-center justify-center min-h-screen bg-gray-100">
-			<div className="w-full max-w-md lg:max-w-2xl p-6 bg-white shadow rounded-lg">
-				<div className="mb-6">
-					<h2 className="text-2xl font-bold text-center">
-						Assign Data Collection Template
-					</h2>
-					
+		<div className="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg border border-gray-200">
+			<div className="flex justify-between items-center mb-6">
+				<h2 className="text-3xl font-bold text-blue-700">
+					Assign Data Collection Template
+				</h2>
+				<button
+					onClick={() => navigate("/add-template-form")}
+					className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md shadow"
+				>
+					<FiPlus />
+					Add Template
+				</button>
+			</div>
+			<form onSubmit={formik.handleSubmit} className="space-y-6">
+				{/* Templates Dropdown */}
+				<div>
+					<label className="block font-medium text-gray-700 mb-1">
+						Select Templates
+					</label>
+					<Select
+						isMulti
+						name="templates"
+						options={templateOptions}
+						value={formik.values.templates}
+						onChange={(selected) =>
+							formik.setFieldValue("templates", selected)
+						}
+						className="react-select-container"
+						classNamePrefix="react-select"
+						placeholder="Choose templates..."
+					/>
+					{formik.errors.templates && formik.touched.templates && (
+						<p className="text-red-500 text-sm mt-1">
+							{formik.errors.templates}
+						</p>
+					)}
 				</div>
 
-				<Formik
-					initialValues={{
-						title: "",
-						roles: [],
-						cycle: "",
-					}}
-					validationSchema={validationSchema}
-					onSubmit={handleSubmit}
-				>
-					{({
-						values,
-						handleChange,
-						setFieldValue,
-						isSubmitting,
-					}) => (
-						<Form>
-							{/* Title */}
-							<div className="mb-4">
-								<label className="block text-gray-700 mb-1">
-									Enter Collection Title
-								</label>
-								<Field
-									type="text"
-									name="title"
-									className="w-full px-4 py-2 border border-gray-300 rounded"
-									placeholder="Enter a title"
-								/>
-								<ErrorMessage
-									name="title"
-									component="div"
-									className="text-red-500 text-sm"
-								/>
-							</div>
-
-							{/* Roles */}
-							<div className="mb-4">
-								<label className="block text-gray-700 mb-1">
-									Select Role(s)
-								</label>
-								<div className="flex flex-wrap gap-4">
-									{[
-										"dataCollector",
-										"administrator",
-										"dashboardViewer",
-									].map((role) => (
-										<label
-											key={role}
-											className="inline-flex items-center gap-2"
-										>
-											<Field
-												type="checkbox"
-												name="roles"
-												value={role}
-												checked={values.roles.includes(
-													role
-												)}
-												onChange={(e) => {
-													const { checked } =
-														e.target;
-													if (checked) {
-														setFieldValue("roles", [
-															...values.roles,
-															role,
-														]);
-													} else {
-														setFieldValue(
-															"roles",
-															values.roles.filter(
-																(r) =>
-																	r !== role
-															)
-														);
-													}
-												}}
-											/>
-											<span className="capitalize">
-												{role}
-											</span>
-										</label>
-									))}
-								</div>
-								<ErrorMessage
-									name="roles"
-									component="div"
-									className="text-red-500 text-sm"
-								/>
-								<p className="text-xs text-gray-500 mt-1">
-									Select one or more roles to assign the
-									template
-								</p>
-							</div>
-
-							{/* Collection Cycle */}
-							<div className="mb-6">
-								<label className="block text-gray-700 mb-1">
-									Collection Cycle
-								</label>
-								<div className="flex flex-wrap gap-4">
-									{[
-										"Hourly",
-										"Daily",
-										"Weekly",
-										"Monthly",
-										"Quarterly",
-										"Bi-Annually",
-										"Yearly",
-									].map((cycleOption) => (
-										<label
-											key={cycleOption}
-											className="inline-flex items-center gap-1"
-										>
-											<Field
-												type="radio"
-												name="cycle"
-												value={cycleOption}
-												className="form-radio"
-											/>
-											{cycleOption}
-										</label>
-									))}
-								</div>
-								<ErrorMessage
-									name="cycle"
-									component="div"
-									className="text-red-500 text-sm"
-								/>
-							</div>
-
-							{/* Submit */}
-							<button
-								type="submit"
-								disabled={isSubmitting}
-								className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow"
-							>
-								{isSubmitting
-									? "Assigning..."
-									: "Assign Template"}
-							</button>
-						</Form>
+				{/* User Group */}
+				<div>
+					<label
+						htmlFor="userGroup"
+						className="block font-medium text-gray-700 mb-1"
+					>
+						Select User Group
+					</label>
+					<select
+						id="userGroup"
+						name="userGroup"
+						value={formik.values.userGroup}
+						onChange={formik.handleChange}
+						className="w-full p-2 border border-gray-300 rounded-md"
+					>
+						<option value="">Select a user group</option>
+						{userGroups.map((group) => (
+							<option key={group._id} value={group._id}>
+								{group.name}
+							</option>
+						))}
+					</select>
+					{formik.errors.userGroup && formik.touched.userGroup && (
+						<p className="text-red-500 text-sm mt-1">
+							{formik.errors.userGroup}
+						</p>
 					)}
-				</Formik>
-			</div>
+				</div>
+
+				{/* Cycle */}
+				<div>
+					<label
+						htmlFor="cycle"
+						className="block font-medium text-gray-700 mb-1"
+					>
+						Select Data Collection Cycle
+					</label>
+					<select
+						id="cycle"
+						name="cycle"
+						value={formik.values.cycle}
+						onChange={formik.handleChange}
+						className="w-full p-2 border border-gray-300 rounded-md"
+					>
+						<option value="">Select a cycle</option>
+						<option value="Hourly">Hourly</option>
+						<option value="Daily">Daily</option>
+						<option value="Weekly">Weekly</option>
+						<option value="Monthly">Monthly</option>
+						<option value="Quarterly">Quarterly</option>
+						<option value="Bi-Annually">Bi-Annually</option>
+						<option value="Yearly">Yearly</option>
+					</select>
+					{formik.errors.cycle && formik.touched.cycle && (
+						<p className="text-red-500 text-sm mt-1">
+							{formik.errors.cycle}
+						</p>
+					)}
+				</div>
+
+				{/* Submit Button */}
+				<div className="flex justify-end">
+					<button
+						type="submit"
+						disabled={loading}
+						className={`flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm transition duration-200 ${
+							loading ? "opacity-50 cursor-not-allowed" : ""
+						}`}
+					>
+						<FiSend className="text-lg" />
+						{loading ? "Assigning..." : "Assign Template"}
+					</button>
+				</div>
+			</form>
 		</div>
 	);
 };
 
-export default AssignDataCollectionTemplate;
+export default AssignTemplateForm;
