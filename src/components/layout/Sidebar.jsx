@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Sidebar,
 	SidebarItem,
@@ -6,55 +6,85 @@ import {
 	SidebarItemGroup,
 } from "flowbite-react";
 import {
-	HiCollection,
 	HiChartPie,
 	HiViewBoards,
 	HiUsers,
 	HiUserCircle,
 	HiUserGroup,
-	HiDatabase, // New icon for Data Points
-	HiFolderAdd, // New icon for Collections
+	HiDatabase,
+	HiFolderAdd,
+	HiOutlineMenuAlt2,
 } from "react-icons/hi";
 
-const AppSidebar = () => {
+const AppSidebar = ({ children }) => {
+	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+	const toggleSidebar = () => {
+		setIsSidebarOpen((prev) => !prev);
+	};
+
 	return (
-		<Sidebar
-			aria-label="Sidebar"
-			className="h-screen w-64 min-w-fit bg-white shadow-md"
-		>
-			<SidebarItems className="py-6">
-				<SidebarItemGroup className="space-y-6">
-					{/* Updated icon for Data Points */}
-					<SidebarItem href="/" icon={HiDatabase}>
-						Data Points
-					</SidebarItem>
+		<div className="flex min-h-screen">
+			{/* Sidebar */}
+			<div
+				className={`transition-all duration-300 ${
+					isSidebarOpen ? "w-20 md:w-64" : "w-0"
+				} overflow-hidden bg-white shadow-md`}
+			>
+				<Sidebar aria-label="Sidebar" className="h-full">
+					<SidebarItems className="py-6">
+						<SidebarItemGroup className="space-y-6">
+							<SidebarItem href="/" icon={HiDatabase}>
+								<span className="hidden md:inline">
+									Data Points
+								</span>
+							</SidebarItem>
+							<SidebarItem
+								href="/assign-template-form"
+								icon={HiFolderAdd}
+							>
+								<span className="hidden md:inline">
+									Collections
+								</span>
+							</SidebarItem>
+							<SidebarItem href="/create-chart" icon={HiChartPie}>
+								<span className="hidden md:inline">Charts</span>
+							</SidebarItem>
+							<SidebarItem href="#" icon={HiViewBoards}>
+								<span className="hidden md:inline">
+									Dashboards
+								</span>
+							</SidebarItem>
+							<SidebarItem href="#" icon={HiUserGroup}>
+								<span className="hidden md:inline">
+									User Groups
+								</span>
+							</SidebarItem>
+							<SidebarItem href="#" icon={HiUsers}>
+								<span className="hidden md:inline">Users</span>
+							</SidebarItem>
+							<SidebarItem href="#" icon={HiUserCircle}>
+								<span className="hidden md:inline">Admins</span>
+							</SidebarItem>
+						</SidebarItemGroup>
+					</SidebarItems>
+				</Sidebar>
+			</div>
 
-					{/* Updated icon for Collections */}
-					<SidebarItem
-						href="/assign-template-form"
-						icon={HiFolderAdd}
-					>
-						Collections
-					</SidebarItem>
+			{/* Main Content */}
+			<div className="flex-1 relative">
+				{/* Menu Button */}
+				<button
+					className="absolute top-4 left-4 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100 transition"
+					onClick={toggleSidebar}
+				>
+					<HiOutlineMenuAlt2 className="h-6 w-6 text-gray-700" />
+				</button>
 
-					<SidebarItem href="#" icon={HiChartPie}>
-						Charts
-					</SidebarItem>
-					<SidebarItem href="#" icon={HiViewBoards}>
-						Dashboards
-					</SidebarItem>
-					<SidebarItem href="#" icon={HiUserGroup}>
-						User Groups
-					</SidebarItem>
-					<SidebarItem href="#" icon={HiUsers}>
-						Users
-					</SidebarItem>
-					<SidebarItem href="#" icon={HiUserCircle}>
-						Admins
-					</SidebarItem>
-				</SidebarItemGroup>
-			</SidebarItems>
-		</Sidebar>
+				{/* Actual content */}
+				<div className="p-6">{children}</div>
+			</div>
+		</div>
 	);
 };
 

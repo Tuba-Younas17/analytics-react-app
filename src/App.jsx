@@ -9,6 +9,8 @@ import ViewAllDataPoints from "./components/pages/datapoints/ViewAllDataPoints";
 import UpdateDataPoint from "./components/pages/datapoints/UpdateDataPoint";
 import AssignTemplateForm from "./components/pages/template/AssignTemplateForm";
 import AddTemplateForm from "./components/pages/template/AddTemplateForm";
+import CreateChart from "./components/pages/chart/CreateChart";
+import AllCharts from "./components/pages/chart/AllCharts";
 
 const App = () => {
 	return (
@@ -22,6 +24,8 @@ const App = () => {
 						<Route exact path="/update/:id" element={<UpdateDataPoint />} />
 						<Route exact path="/assign-template-form" element={<AssignTemplateForm />} />
 						<Route exact path="/add-template-form" element={<AddTemplateForm />} />
+						<Route exact path="/create-chart" element={<CreateChart />} />
+						<Route exact path="/all-chart" element={<AllCharts />} />
 						
 					</Routes>
 				</div>

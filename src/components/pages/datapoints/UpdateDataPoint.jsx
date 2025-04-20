@@ -2,25 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faBan } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Select from "react-select";
-
-
 import {
 	Button,
 	Label,
 	TextInput,
 	Textarea,
-	// Select,
-	Datepicker,
+	Select as FlowbiteSelect,
 } from "flowbite-react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import SkeletonLoader from "../../layout/SkeletonLoader";
 import { fetchDataForSpecificId } from "../../../utils/dataPoints/fetchDataForSpecificId";
 import { handleSubmitForUpdateForm } from "../../../utils/dataPoints/handleSubmitForUpdateForm";
-import { frequencyOptions, userRoleOptions } from "../../../constants/roleAndFrequencyConstants";
+import {
+	frequencyOptions,
+	userRoleOptions,
+} from "../../../constants/roleAndFrequencyConstants";
 
 const UpdateDataPoint = () => {
 	const { id } = useParams();
@@ -33,7 +33,6 @@ const UpdateDataPoint = () => {
 		description: Yup.string().required("Description is required"),
 		frequency: Yup.string().required("Frequency is required"),
 		userRoles: Yup.array().min(1, "Select at least one role"),
-		date: Yup.date().required("Date is required"),
 	});
 
 	useEffect(() => {
@@ -88,18 +87,19 @@ const UpdateDataPoint = () => {
 						{/* Type */}
 						<div>
 							<Label htmlFor="type" value="Data Point Type" />
-							<Select
+							<FlowbiteSelect
 								id="type"
 								name="type"
 								value={values.type}
 								onChange={handleChange}
 								onBlur={handleBlur}
 							>
-								<option>Text Field</option>
-								<option>Number</option>
-								<option>Date</option>
-								<option>Dropdown</option>
-							</Select>
+								<option value="">Select Type</option>
+								<option value="Text Field">Text Field</option>
+								<option value="Number">Number</option>
+								<option value="Date">Date</option>
+								
+							</FlowbiteSelect>
 							{touched.type && errors.type && (
 								<p className="text-red-500 text-sm mt-1">
 									{errors.type}
@@ -134,14 +134,10 @@ const UpdateDataPoint = () => {
 								name="frequency"
 								options={frequencyOptions}
 								value={frequencyOptions.find(
-									(option) =>
-										option.value === values.frequency
+									(opt) => opt.value === values.frequency
 								)}
-								onChange={(selectedOption) =>
-									setFieldValue(
-										"frequency",
-										selectedOption.value
-									)
+								onChange={(option) =>
+									setFieldValue("frequency", option.value)
 								}
 								onBlur={handleBlur}
 							/>
@@ -163,9 +159,9 @@ const UpdateDataPoint = () => {
 								value={userRoleOptions.filter((opt) =>
 									values.userRoles.includes(opt.value)
 								)}
-								onChange={(selectedOptions) => {
-									const roles = selectedOptions.map(
-										(option) => option.value
+								onChange={(selected) => {
+									const roles = selected.map(
+										(opt) => opt.value
 									);
 									setFieldValue("userRoles", roles);
 								}}
@@ -174,26 +170,6 @@ const UpdateDataPoint = () => {
 							{touched.userRoles && errors.userRoles && (
 								<p className="text-red-500 text-sm mt-1">
 									{errors.userRoles}
-								</p>
-							)}
-						</div>
-
-						{/* Date */}
-						<div>
-							<Label htmlFor="date" value="Date" />
-							<TextInput
-								id="date"
-								name="date"
-								type="date"
-								value={
-									values.date ? values.date.split("T")[0] : ""
-								}
-								onChange={handleChange}
-								onBlur={handleBlur}
-							/>
-							{touched.date && errors.date && (
-								<p className="text-red-500 text-sm mt-1">
-									{errors.date}
 								</p>
 							)}
 						</div>

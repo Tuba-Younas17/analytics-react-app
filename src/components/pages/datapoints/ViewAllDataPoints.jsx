@@ -18,6 +18,7 @@ const ViewAllDataPoints = () => {
 	useEffect(() => {
 		const loadData = async () => {
 			const data = await fetchAllDataPoints();
+			console.log(data)
 			setDataPoints(data);
 			setLoading(false);
 		};
@@ -74,10 +75,25 @@ const ViewAllDataPoints = () => {
 						<p className="text-gray-600 mb-2">
 							<b>User Roles:</b> {dp.userRoles.join(", ")}
 						</p>
-						<p className="text-gray-600 mb-2">
-							<b>Date:</b>{" "}
-							{new Date(dp.date).toLocaleDateString()}
-						</p>
+					
+						{/* Display the data array if needed */}
+						{dp.data.length > 0 && (
+							<div className="mt-4">
+								<h6 className="font-semibold text-gray-800">
+									Data:
+								</h6>
+								<ul className="text-gray-600">
+									{dp.data.map((item, index) => (
+										<li key={index}>
+											<b>Number of Response:</b> {item.numberOfResponse},{" "}
+											<b>Date:</b> {item.date}
+											{/* Directly display the numeric date */}
+										</li>
+									))}
+								</ul>
+							</div>
+						)}
+						
 						<div className="flex gap-4 mt-4">
 							<Button
 								className="text-black-800 mb-2 bg-red-600"

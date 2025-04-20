@@ -7,7 +7,6 @@ import {
 	Button,
 	ToggleSwitch,
 	Checkbox,
-	Datepicker,
 	Radio,
 } from "flowbite-react";
 import { useFormik } from "formik";
@@ -28,7 +27,7 @@ const DataPointForm = () => {
 			columns: "1", // For number of columns (e.g., 1 or 2)
 			frequency: "", // For Radio buttons (e.g., hourly, daily)
 			userRoles: [], // For checkboxes (e.g., Data Collector, Administrator)
-			date: "", // For date input
+			data: [], // New field for data (array of objects)
 		},
 		validationSchema: Yup.object({
 			name: Yup.string().required("Name is required"),
@@ -42,13 +41,41 @@ const DataPointForm = () => {
 				.matches(/^[1-9]$/, "Columns must be a number between 1 and 9"), // Added validation for columns
 			frequency: Yup.string().required("Frequency is required"),
 			userRoles: Yup.array().min(1, "At least one role is required"),
-			date: Yup.date().required("Date is required").nullable(), // Handle nullable date
+			data: Yup.array().of(
+				Yup.object().shape({
+					numberOfResponse: Yup.number().required(
+						"response  is required"
+					),
+					date: Yup.number().required("Launch date is required"),
+				})
+			),
 		}),
 		onSubmit: async (values, { resetForm }) => {
+			console.log(values);
 			await handleDatapointSubmit(values, isMultiColumn, resetForm);
 			setIsMultiColumn(false);
 		},
 	});
+	// Function to handle adding data entry
+	const handleAddData = () => {
+		formik.setFieldValue("data", [
+			...formik.values.data,
+			{ date: "", numberOfResponse: "" },
+		]);
+	};
+
+	// Function to handle removing data entry
+	const handleRemoveData = (index) => {
+		const updatedData = formik.values.data.filter((_, i) => i !== index);
+		formik.setFieldValue("data", updatedData);
+	};
+
+	// Handle field change for data entries
+	const handleDataFieldChange = (index, field, value) => {
+		const updatedData = [...formik.values.data];
+		updatedData[index][field] = value;
+		formik.setFieldValue("data", updatedData);
+	};
 
 	return (
 		<div className="p-6 bg-white rounded-lg shadow-md">
@@ -324,35 +351,67 @@ const DataPointForm = () => {
 								</p>
 							)}
 					</div>
+				</div>
+				<div className="md:col-span-2">
+					<p className="text-sm text-gray-600 mb-4">
+						<h1 className="text-xl text-gray-900 mb-2">Data</h1>
+						Please add Number Of Response and date for the data
+						point.
+					</p>
 
-					{/* Date (Date Input) */}
-					<div className="md:col-span-2">
-						<p className="text-sm text-gray-600 mb-4">
-							<h1 className="text-xl text-gray-900 mb-2">Date</h1>
-							Please select a date that is relevant to the data
-							point. This field is used to track specific data
-							based on time.
-						</p>
+					{formik.values.data.map((dataEntry, index) => (
+						<div key={index} className="flex gap-4 mb-4">
+							<TextInput
+								id={`data-${index}-numberOfResponse`}
+								name={`data[${index}].numberOfResponse`}
+								placeholder="No. of response collected"
+								value={dataEntry.numberOfResponse}
+								onChange={(e) =>
+									handleDataFieldChange(
+										index,
+										"numberOfResponse",
+										e.target.value
+									)
+								}
+							/>
+							<TextInput
+								id={`data-${index}-date`}
+								name={`data[${index}].date`}
+								placeholder="Date"
+								type="number"
+								// Make sure it's always a number or an empty string
+								value={
+									dataEntry.date !== undefined
+										? dataEntry.date
+										: ""
+								}
+								onChange={(e) =>
+									handleDataFieldChange(
+										index,
+										"date",
+										Number(e.target.value) // Convert the value to a number
+									)
+								}
+							/>
 
-						<Datepicker
-							id="date"
-							name="date"
-							selected={formik.values.date}
-							onChange={(date) =>
-								formik.setFieldValue("date", date)
-							}
-						/>
-						{formik.touched.date && formik.errors.date && (
-							<p className="text-red-500 text-sm mt-1">
-								{formik.errors.date}
-							</p>
-						)}
-					</div>
+							<Button
+								type="button"
+								color="red"
+								onClick={() => handleRemoveData(index)}
+							>
+								Remove
+							</Button>
+						</div>
+					))}
+					<Button type="button" color="green" onClick={handleAddData}>
+						Add Data Entry
+					</Button>
 				</div>
 
 				<div className="flex gap-4 mt-6">
-					<Button color="gray" type="submit">
-						<FaCheck className="mr-2" /> Submit
+					<Button type="submit" color="gray">
+						<FaCheck className="mr-2" />
+						Submit
 					</Button>
 					<Button
 						color="gray"
