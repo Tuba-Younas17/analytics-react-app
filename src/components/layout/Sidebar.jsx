@@ -55,12 +55,12 @@ const AppSidebar = ({ children }) => {
 									Dashboards
 								</span>
 							</SidebarItem>
-							<SidebarItem href="#" icon={HiUserGroup}>
+							<SidebarItem href="/userGroup" icon={HiUserGroup}>
 								<span className="hidden md:inline">
 									User Groups
 								</span>
 							</SidebarItem>
-							<SidebarItem href="#" icon={HiUsers}>
+							<SidebarItem href="/user" icon={HiUsers}>
 								<span className="hidden md:inline">Users</span>
 							</SidebarItem>
 							<SidebarItem href="#" icon={HiUserCircle}>

@@ -12,6 +12,10 @@ import AddTemplateForm from "./components/pages/template/AddTemplateForm";
 import CreateChart from "./components/pages/chart/CreateChart";
 import AllCharts from "./components/pages/chart/AllCharts";
 import CreateDashboardForm from "./components/pages/dashBoard/CreateDashboardForm";
+import CreateUserGroup from "./components/pages/userGroup/CreateUserGroup";
+import CreateUserForm from "./components/pages/users/CreateUser";
+
+
 
 const App = () => {
 	return (
@@ -28,6 +32,8 @@ const App = () => {
 						<Route exact path="/create-chart" element={<CreateChart />} />
 						<Route exact path="/all-chart" element={<AllCharts />} />
 						<Route exact path="/dashBoard" element={<CreateDashboardForm />} />
+						<Route exact path="/userGroup" element={<CreateUserGroup />} />
+						<Route exact path="/user" element={<CreateUserForm/>} />
 						
 					</Routes>
 				</div>
