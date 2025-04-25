@@ -50,7 +50,7 @@ const AppSidebar = ({ children }) => {
 							<SidebarItem href="/create-chart" icon={HiChartPie}>
 								<span className="hidden md:inline">Charts</span>
 							</SidebarItem>
-							<SidebarItem href="#" icon={HiViewBoards}>
+							<SidebarItem href="/dashBoard" icon={HiViewBoards}>
 								<span className="hidden md:inline">
 									Dashboards
 								</span>

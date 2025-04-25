@@ -43,9 +43,7 @@ const DataPointForm = () => {
 			userRoles: Yup.array().min(1, "At least one role is required"),
 			data: Yup.array().of(
 				Yup.object().shape({
-					numberOfResponse: Yup.number().required(
-						"response  is required"
-					),
+					response: Yup.number().required("response  is required"),
 					date: Yup.number().required("Launch date is required"),
 				})
 			),
@@ -60,7 +58,7 @@ const DataPointForm = () => {
 	const handleAddData = () => {
 		formik.setFieldValue("data", [
 			...formik.values.data,
-			{ date: "", numberOfResponse: "" },
+			{ date: "", response: "" },
 		]);
 	};
 
@@ -362,14 +360,14 @@ const DataPointForm = () => {
 					{formik.values.data.map((dataEntry, index) => (
 						<div key={index} className="flex gap-4 mb-4">
 							<TextInput
-								id={`data-${index}-numberOfResponse`}
-								name={`data[${index}].numberOfResponse`}
+								id={`data-${index}-response`}
+								name={`data[${index}].response`}
 								placeholder="No. of response collected"
-								value={dataEntry.numberOfResponse}
+								value={dataEntry.response}
 								onChange={(e) =>
 									handleDataFieldChange(
 										index,
-										"numberOfResponse",
+										"response",
 										e.target.value
 									)
 								}

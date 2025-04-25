@@ -75,7 +75,7 @@ const ViewAllDataPoints = () => {
 						<p className="text-gray-600 mb-2">
 							<b>User Roles:</b> {dp.userRoles.join(", ")}
 						</p>
-					
+
 						{/* Display the data array if needed */}
 						{dp.data.length > 0 && (
 							<div className="mt-4">
@@ -85,15 +85,16 @@ const ViewAllDataPoints = () => {
 								<ul className="text-gray-600">
 									{dp.data.map((item, index) => (
 										<li key={index}>
-											<b>Number of Response:</b> {item.numberOfResponse},{" "}
-											<b>Date:</b> {item.date}
+											<b>Number of Response:</b>{" "}
+											{item.response}, <b>Date:</b>{" "}
+											{item.date}
 											{/* Directly display the numeric date */}
 										</li>
 									))}
 								</ul>
 							</div>
 						)}
-						
+
 						<div className="flex gap-4 mt-4">
 							<Button
 								className="text-black-800 mb-2 bg-red-600"

@@ -11,6 +11,7 @@ import AssignTemplateForm from "./components/pages/template/AssignTemplateForm";
 import AddTemplateForm from "./components/pages/template/AddTemplateForm";
 import CreateChart from "./components/pages/chart/CreateChart";
 import AllCharts from "./components/pages/chart/AllCharts";
+import CreateDashboardForm from "./components/pages/dashBoard/CreateDashboardForm";
 
 const App = () => {
 	return (
@@ -26,6 +27,7 @@ const App = () => {
 						<Route exact path="/add-template-form" element={<AddTemplateForm />} />
 						<Route exact path="/create-chart" element={<CreateChart />} />
 						<Route exact path="/all-chart" element={<AllCharts />} />
+						<Route exact path="/dashBoard" element={<CreateDashboardForm />} />
 						
 					</Routes>
 				</div>

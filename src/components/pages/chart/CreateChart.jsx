@@ -49,7 +49,7 @@ export default function CreateChart() {
 
 	const initialValues = {
 		selectedDataPointId: "",
-		chartTitle: "",
+		title: "",
 		xAxis: "",
 		yAxis: "",
 		pivotValue: "",
@@ -58,42 +58,38 @@ export default function CreateChart() {
 
 	const validationSchema = Yup.object({
 		selectedDataPointId: Yup.string().required("Data point is required"),
-		chartTitle: Yup.string().required("Chart title is required"),
+		title: Yup.string().required("Chart title is required"),
 		xAxis: Yup.string().required("X-axis field is required"),
 		yAxis: Yup.string().required("Y-axis field is required"),
 		selectedCharts: Yup.array().min(1, "Select at least one chart type"),
 	});
 
-	const getChartPreview = (type, xAxis, yAxis) => {
-		const sampleData = {
-			labels: ["Jan", "Feb", "Mar", "Apr"],
-			datasets: [
-				{
-					label: `${yAxis || "Y"} vs ${xAxis || "X"}`,
-					data: [12, 19, 3, 5],
-					backgroundColor: [
-						"#3b82f6",
-						"#10b981",
-						"#f59e0b",
-						"#ef4444",
-					],
-					borderColor: "#3b82f6",
-					borderWidth: 1,
-				},
-			],
-		};
-
-		switch (type) {
-			case "bar":
-				return <Bar data={sampleData} />;
-			case "line":
-				return <Line data={sampleData} />;
-			case "pie":
-				return <Pie data={sampleData} />;
-			default:
-				return null;
-		}
+const getChartPreview = (type, xAxis, yAxis, title) => {
+	const sampleData = {
+		labels: ["Jan", "Feb", "Mar", "Apr"],
+		datasets: [
+			{
+				label: title || `${yAxis || "Y"} vs ${xAxis || "X"}`,
+				data: [12, 19, 3, 5],
+				backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
+				borderColor: "#3b82f6",
+				borderWidth: 1,
+			},
+		],
 	};
+
+	switch (type) {
+		case "bar":
+			return <Bar data={sampleData} />;
+		case "line":
+			return <Line data={sampleData} />;
+		case "pie":
+			return <Pie data={sampleData} />;
+		default:
+			return null;
+	}
+};
+
 
 
 	return (
@@ -150,12 +146,12 @@ export default function CreateChart() {
 							</label>
 							<Field
 								type="text"
-								name="chartTitle"
+								name="title"
 								className="w-full p-2 border rounded"
 								placeholder="e.g. Radio 1 plotted against Timestamp"
 							/>
 							<ErrorMessage
-								name="chartTitle"
+								name="title"
 								component="div"
 								className="text-red-500 text-sm"
 							/>
@@ -170,7 +166,7 @@ export default function CreateChart() {
 								type="text"
 								name="xAxis"
 								className="w-full p-2 border rounded"
-								placeholder="e.g numberOfResponse or date"
+								placeholder="e.g response or date"
 							/>
 							<ErrorMessage
 								name="xAxis"
@@ -188,7 +184,7 @@ export default function CreateChart() {
 								type="text"
 								name="yAxis"
 								className="w-full p-2 border rounded"
-								placeholder="numberOfResponse or date"
+								placeholder="response or date"
 							/>
 							<ErrorMessage
 								name="yAxis"
@@ -260,7 +256,8 @@ export default function CreateChart() {
 												{getChartPreview(
 													type,
 													values.xAxis,
-													values.yAxis
+													values.yAxis,
+													values.title
 												)}
 											</div>
 											<p className="text-center font-medium mt-2 capitalize">

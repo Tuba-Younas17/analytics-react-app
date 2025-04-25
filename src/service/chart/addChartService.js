@@ -6,7 +6,7 @@ const addChartService = async ({
 	xAxis,
 	yAxis,
 	chartType,
-	chartTitle,
+	title,
 	pivoted,
 	pivotValue,
 }) => {
@@ -18,11 +18,12 @@ const addChartService = async ({
 				dataPointId,
 				plotCombination: { x: xAxis, y: yAxis },
 				chartType,
-				title: chartTitle,
+				title,
 				pivot: pivoted,
 				pivotValue: pivotValue,
 			}
 		);
+		console.log(response.data);
 
 		return response.data;
 	} catch (err) {

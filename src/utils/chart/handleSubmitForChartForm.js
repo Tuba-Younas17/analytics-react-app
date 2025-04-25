@@ -16,10 +16,11 @@ const handleSubmitForChartForm = async (
 				xAxis: values.xAxis,
 				yAxis: values.yAxis,
 				chartType,
-				chartTitle: values.chartTitle,
+				title: values.title,
 				pivoted,
 				pivotValue: pivoted ? values.pivotValue : null,
 			});
+
 		}
 
 		toast.success("Chart(s) created successfully!");
